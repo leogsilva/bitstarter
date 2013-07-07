@@ -1,18 +1,18 @@
 
 var express = require('express'),
-	fs = require('fs')
-
-var app = express.createServer(express.logger());
-
-app.get('/index.html', function(request, response) {
-  fs.readFile('./index.html',function(err, html) {
-    if (err)
-	throw err;
-    response.send(html);
-  }); 
-});
+	fs = require('fs'),
+        http = require('http')
 
 var port = process.env.PORT || 5000;
-app.listen(port, function() {
-  console.log("Listening on " + port);
-});
+http.createServer(function (req, res) {
+  fs.readFile(__dirname + req.url, function (err,data) {
+    if (err) {
+      res.writeHead(404);
+      res.end(JSON.stringify(err));
+      return;
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+}).listen(port);
+
